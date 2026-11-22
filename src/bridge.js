@@ -1,9 +1,16 @@
 import { EventEmitter } from 'node:events';
 import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { Store } from './store.js';
 import { CodexRpc } from './rpc.js';
 import { quotaWindows, quotaEvents } from './quota.js';
 import { bounded, ownerId, projectPath, safeError, text } from './util.js';
+
+/** 本包版本，取自 package.json：诊断输出不能写死版本号。 */
+const VERSION = (() => {
+  try { return JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version; }
+  catch { return 'unknown'; }
+})();
 
 export const defaults = {
   codexPath: '', allowedRoots: [], writable: false, pollMinutes: 10,
@@ -131,7 +138,7 @@ export class Bridge extends EventEmitter {
       const account = await this.rpc.request('account/read', { refreshToken: false });
       codex = { connected: true, executable: this.rpc.executable || null, accountType: account.account?.type || null, plan: account.account?.planType || null, requiresOpenaiAuth: account.requiresOpenaiAuth ?? null };
     } catch (error) { codex = { connected: false, error: safeError(error) }; }
-    return { version: '0.1.0', codex, writable: this.config.writable, allowedRoots: this.config.allowedRoots,
+    return { version: VERSION, codex, writable: this.config.writable, allowedRoots: this.config.allowedRoots,
       monitoring: { pollMinutes: this.config.pollMinutes, lastError: this.lastError },
       notificationFailures: this.store.state.outbox.filter(item => ['failed', 'unknown'].includes(item.status)).map(item => ({ id: item.id, status: item.status, error: item.error })) };
   }

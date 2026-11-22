@@ -1,10 +1,14 @@
 # Changelog
 
+## 0.2.3
+
+- 修复：`codex_bridge` 的 `doctor` 输出写死 `version: '0.1.0'`，与安装版本不一致；改为读取 `package.json`。
+- 设置页在保存后重读配置时带退避重试，避免插件重载瞬间被误报为读取失败。
+
 ## 0.2.2
 
 - 新增设置页（**设置 → Codex 桥接**）：表单覆盖全部 11 个配置字段，带范围校验与路径提示；保存走宿主 `configEditor`，改回默认值的项不会写进 profile。
 - 修复：包缺少 `@deepseek-ai/dsh-tools` 与 `@deepseek-ai/schemastery` 的 peer 声明。dsh 以目录链接方式安装插件时只按 `peerDependencies` 把 `@deepseek-ai/*` 路由到自带运行时，缺失声明会导致插件无法激活（dsh 0.2.2-rc.3 复现 `ERR_MODULE_NOT_FOUND`）。
-- 设置页在保存后重读配置时带退避重试，避免插件重载瞬间被误报为读取失败。
 - 验收：20 项自动化测试与 `scripts/check.mjs` 的 manifest/locale/资源检查通过；在运行中的 dsh 0.2.2-rc.3 上完成安装、激活、设置页读写（含默认值抑制）与只读任务派发。
 
 ## 0.1.0
