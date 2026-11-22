@@ -1,0 +1,1 @@
+{"meta":{"title":"Codex 桥接","description":"查看 Codex 额度、接收重置提醒，并派发、继续、查询或停止本地 Codex 任务。在插件配置中设置项目目录及可选的 QQ 私聊白名单。需要已登录的 Codex CLI。QQ 通知适配 dsh-qqbot 0.5.5，复用其账号配置；主动发送仍受 QQ 平台权限限制。"}}

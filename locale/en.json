@@ -1,0 +1,1 @@
+{"meta":{"title":"Codex bridge","description":"Read Codex limits, receive reset reminders, and start, continue, inspect or stop local Codex tasks. Configure project roots and optional QQ private-chat access in plugin settings. Requires a signed-in Codex CLI. QQ notifications reuse dsh-qqbot 0.5.5 credentials and require platform permission for proactive messages."}}
