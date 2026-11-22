@@ -3,6 +3,7 @@ import z from '@deepseek-ai/schemastery';
 import { defineTool } from '@deepseek-ai/dsh-tools';
 import { Bridge, defaults } from './src/bridge.js';
 import { authorizeQQ, qqCredentials, QQSender, resolveQQPeer } from './src/qq.js';
+import { registerConfigRoute } from './src/config-route.js';
 import { ownerId, safeError } from './src/util.js';
 
 export const name = 'codex-bridge';
@@ -37,6 +38,19 @@ export async function apply(ctx, config) {
   const ready = bridge.init();
   ctx.effect(() => () => ready.then(() => bridge.close()));
   await ready;
+
+  // 设置页的读写路由：webServer 可选，缺失时插件仍按配置运行，只是没有界面。
+  ctx.inject(['webServer'], scoped => {
+    const webServer = scoped.webServer;
+    if (webServer === undefined || typeof webServer.register !== 'function') return;
+    const dispose = registerConfigRoute({
+      webServer,
+      configEditor: ctx.get('configEditor'),
+      entry: ctx.fiber.entry,
+      config: effective,
+    });
+    ctx.effect(() => () => dispose());
+  });
 
   async function caller(exec) {
     exec.signal?.throwIfAborted();
