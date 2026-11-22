@@ -133,14 +133,22 @@ window.__ModuleLoader__.load({
       const [notice, setNotice] = useState(null);
 
       const load = useCallback(async () => {
-        try {
-          const response = await fetch(CONFIG_PATH, { cache: 'no-store', headers: { accept: 'application/json' } });
-          const body = await response.json().catch(() => null);
-          if (!response.ok || !body || body.ok !== true) throw new Error(body && body.error ? body.error : `HTTP ${response.status}`);
-          setRemote({ status: 'ready', config: body.config, fields: body.fields ?? [], groups: body.groups ?? [], error: null });
-          setDraft({ ...body.config });
-        } catch (error) {
-          setRemote(previous => ({ ...previous, status: 'failed', error: String(error && error.message ? error.message : error) }));
+        // 保存会重载插件，路由可能短暂不可用：重试几次再判定失败。
+        for (let attempt = 0; attempt < 4; attempt++) {
+          try {
+            const response = await fetch(CONFIG_PATH, { cache: 'no-store', headers: { accept: 'application/json' } });
+            const body = await response.json().catch(() => null);
+            if (!response.ok || !body || body.ok !== true) throw new Error(body && body.error ? body.error : `HTTP ${response.status}`);
+            setRemote({ status: 'ready', config: body.config, fields: body.fields ?? [], groups: body.groups ?? [], error: null });
+            setDraft({ ...body.config });
+            return;
+          } catch (error) {
+            if (attempt === 3) {
+              setRemote(previous => ({ ...previous, status: 'failed', error: String(error && error.message ? error.message : error) }));
+              return;
+            }
+            await new Promise(resolve => setTimeout(resolve, 600 * (attempt + 1)));
+          }
         }
       }, []);
 
@@ -226,7 +234,7 @@ window.__ModuleLoader__.load({
           name: 'settings.section',
           id: 'codex-bridge',
           order: 55,
-          label: zh ? text.title : text.title,
+          label: text.title,
         }, ConfigPage));
       },
     };

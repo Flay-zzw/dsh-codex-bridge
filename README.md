@@ -2,7 +2,7 @@
 
 一个可安装的 DeepSeek Harness（dsh）插件：监控 Codex 订阅额度，在重置前提醒，通过 QQ 私聊派发、查询、继续和停止本机 Codex 任务。
 
-**版本：0.2.1。源码采用 MIT 许可证。此包尚未发布到 npm。**
+**版本：0.2.2。源码采用 MIT 许可证。此包尚未发布到 npm。**
 
 ![Codex bridge](icon.svg)
 
