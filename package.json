@@ -10,5 +10,13 @@
   "files": ["index.js", "src", "bin", "cordis.patch.yml", "locale", "icon.svg", "README.md", "LICENSE", "CHANGELOG.md", "docs"],
   "scripts": { "test": "node --test test/*.test.js", "check": "node scripts/check.mjs", "prepack": "node scripts/check.mjs" },
   "keywords": ["dsh", "dsh-plugin", "codex", "qq", "quota", "deepseek-harness"],
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": "^0.2.2-rc.3",
+    "@deepseek-ai/schemastery": "^3.19.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-tools": { "optional": true },
+    "@deepseek-ai/schemastery": { "optional": true }
+  },
   "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
 }
